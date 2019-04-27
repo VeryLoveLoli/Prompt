@@ -73,33 +73,33 @@
 
 ```swift
 
-	/// 文字提示
-	Prompt.title("呵呵", milliseconds: 2000, isBackground: true, sup: view, location: view.center)
+    /// 文字提示
+    Prompt.title("呵呵", milliseconds: 2000, isBackground: true, sup: view, location: view.center)
         
-	/// 加载提示
-	let load = Prompt.load("正在加载...", timeInterval: 1, repeats: 2, isBackground: true, sup: view, location: view.center)
-
-	DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+    /// 加载提示
+    let load = Prompt.load("正在加载...", timeInterval: 1, repeats: 2, isBackground: true, sup: view, location: view.center)
     
-    	load.close()
-	}
-	
-	/// GIF提示
-	if let path = Bundle.main.path(forResource: "test", ofType: "gif") {
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
     
-    	do {
+        load.close()
+    }
+    	
+    /// GIF提示
+    if let path = Bundle.main.path(forResource: "test", ofType: "gif") {
         
-        	let data = try Data.init(contentsOf: URL.init(fileURLWithPath: path))
-        	let gif = Prompt.gif(data, isBackground: true, sup: view, location: view.center)
-        
-        	DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+        do {
             
-            	gif.close()
-        	}
-        
-    	} catch {
-        
-        	print(error)
-    	}
-	}
+            let data = try Data.init(contentsOf: URL.init(fileURLWithPath: path))
+            let gif = Prompt.gif(data, isBackground: true, sup: view, location: view.center)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) {
+                
+                gif.close()
+            }
+            
+        } catch {
+            
+            print(error)
+        }
+    }
 ```
