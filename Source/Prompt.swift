@@ -227,19 +227,22 @@ public class Prompt {
      */
     public func close() {
         
-        UIView.animate(withDuration: 0.25, animations: {
+        DispatchQueue.main.async {
             
-            self.background.alpha = 0
-            self.content.alpha = 0
-            self.content.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
-            self.gif.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
-            
-        }) { (bool) in
-            
-            self.activity.stopAnimating()
-            self.background.removeFromSuperview()
-            self.content.removeFromSuperview()
-            self.gif.removeFromSuperview()
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self.background.alpha = 0
+                self.content.alpha = 0
+                self.content.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
+                self.gif.transform = CGAffineTransform.init(scaleX: 0.1, y: 0.1)
+                
+            }) { (bool) in
+                
+                self.activity.stopAnimating()
+                self.background.removeFromSuperview()
+                self.content.removeFromSuperview()
+                self.gif.removeFromSuperview()
+            }
         }
     }
 }
