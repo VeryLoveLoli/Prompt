@@ -312,6 +312,22 @@ fileprivate extension UIImageView {
 
 public extension Prompt {
     
+    static func keyWindow() -> UIWindow? {
+        
+        if let window = UIApplication.shared.keyWindow {
+            
+            return window
+        }
+        else if UIApplication.shared.windows.count > 0 {
+            
+            return UIApplication.shared.windows[0]
+        }
+        else {
+            
+            return nil
+        }
+    }
+    
     /**
      窗口文字提示
      
@@ -321,7 +337,7 @@ public extension Prompt {
      */
     static func titleWindow(_ title: String, milliseconds: Int, isBackground: Bool) {
         
-        if let window = (UIApplication.shared.delegate as? AppDelegate)?.window {
+        if let window = keyWindow() {
             
             self.title(title, milliseconds: milliseconds, isBackground: isBackground, sup: window, location: window.center)
         }
@@ -337,7 +353,7 @@ public extension Prompt {
      */
     static func loadWindow(_ title: String, timeInterval: TimeInterval, repeats: Int, isBackground: Bool) -> Prompt? {
         
-        if let window = (UIApplication.shared.delegate as? AppDelegate)?.window {
+        if let window = keyWindow() {
             
             return load(title, timeInterval: timeInterval, repeats: repeats, isBackground: isBackground, sup: window, location: window.center)
         }
@@ -355,7 +371,7 @@ public extension Prompt {
      */
     static func gifWindow(_ data: Data, isBackground: Bool) -> Prompt? {
         
-        if let window = (UIApplication.shared.delegate as? AppDelegate)?.window {
+        if let window = keyWindow() {
             
             return gif(data, isBackground: isBackground, sup: window, location: window.center)
         }
