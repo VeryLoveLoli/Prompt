@@ -12,7 +12,7 @@ import UIKit
 /**
  提示
  */
-public class Prompt {
+open class Prompt {
     
     /// 背景
     public let background = UIView.init()
@@ -225,7 +225,7 @@ public class Prompt {
     /**
      关闭
      */
-    public func close() {
+    open func close() {
         
         DispatchQueue.main.async {
             
