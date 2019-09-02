@@ -84,8 +84,8 @@ open class Prompt {
                                            NSLayoutConstraint.init(item: prompt.title, attribute: .bottom, relatedBy: .equal, toItem: prompt.content, attribute: .bottom, multiplier: 1, constant: -20)])
             
             sup.addConstraints([NSLayoutConstraint.init(item: prompt.content, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: sup, attribute: .left, multiplier: 1, constant: 20),
-                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
-                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: location.x/sup.center.x, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: location.y/sup.center.y, constant: 0)])
             
             prompt.background.alpha = 0
             prompt.content.alpha = 0
@@ -158,8 +158,8 @@ open class Prompt {
             }
             
             sup.addConstraints([NSLayoutConstraint.init(item: prompt.content, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: sup, attribute: .left, multiplier: 1, constant: 20),
-                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
-                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: location.x/sup.center.x, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: location.y/sup.center.y, constant: 0)])
             
             prompt.background.alpha = 0
             prompt.content.alpha = 0
@@ -234,8 +234,8 @@ open class Prompt {
             
             if let image = prompt.gif.image {
                 
-                sup.addConstraints([NSLayoutConstraint.init(item: prompt.gif, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
-                                    NSLayoutConstraint.init(item: prompt.gif, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
+                sup.addConstraints([NSLayoutConstraint.init(item: prompt.gif, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: location.x/sup.center.x, constant: 0),
+                                    NSLayoutConstraint.init(item: prompt.gif, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: location.y/sup.center.y, constant: 0)])
                 
                 prompt.gif.addConstraints([NSLayoutConstraint.init(item: prompt.gif, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: image.size.width),
                                              NSLayoutConstraint.init(item: prompt.gif, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: image.size.height)])
