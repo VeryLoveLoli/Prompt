@@ -43,6 +43,13 @@ open class Prompt {
         
         content.addSubview(title)
         content.addSubview(activity)
+        
+        background.translatesAutoresizingMaskIntoConstraints = false
+        content.translatesAutoresizingMaskIntoConstraints = false
+        title.translatesAutoresizingMaskIntoConstraints = false
+        content.translatesAutoresizingMaskIntoConstraints = false
+        activity.translatesAutoresizingMaskIntoConstraints = false
+        gif.translatesAutoresizingMaskIntoConstraints = false
     }
     
     /**
@@ -62,18 +69,23 @@ open class Prompt {
             prompt.activity.isHidden = true
             prompt.title.text = title
             prompt.background.isHidden = !isBackground
-            prompt.background.frame = CGRect.init(origin: CGPoint.init(), size: sup.frame.size)
-            
-            let rect = title.boundingRect(with: CGSize.init(width: 0.8 * sup.frame.size.width, height: 0.8 * sup.frame.size.height), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: prompt.title.font!], context: nil)
-            
-            prompt.title.frame = rect
-            prompt.content.frame = CGRect.init(x: 0, y: 0, width: rect.size.width + 40, height: rect.size.height + 40)
-            
-            prompt.title.center = prompt.content.center
-            prompt.content.center = location
             
             sup.addSubview(prompt.background)
             sup.addSubview(prompt.content)
+            
+            sup.addConstraints([NSLayoutConstraint.init(item: prompt.background, attribute: .left, relatedBy: .equal, toItem: sup, attribute: .left, multiplier: 1, constant: 0),
+                                              NSLayoutConstraint.init(item: prompt.background, attribute: .right, relatedBy: .equal, toItem: sup, attribute: .right, multiplier: 1, constant: 0),
+                                              NSLayoutConstraint.init(item: prompt.background, attribute: .top, relatedBy: .equal, toItem: sup, attribute: .top, multiplier: 1, constant: 0),
+                                              NSLayoutConstraint.init(item: prompt.background, attribute: .bottom, relatedBy: .equal, toItem: sup, attribute: .bottom, multiplier: 1, constant: 0)])
+            
+            prompt.content.addConstraints([NSLayoutConstraint.init(item: prompt.title, attribute: .left, relatedBy: .equal, toItem: prompt.content, attribute: .left, multiplier: 1, constant: 20),
+                                           NSLayoutConstraint.init(item: prompt.title, attribute: .right, relatedBy: .equal, toItem: prompt.content, attribute: .right, multiplier: 1, constant: -20),
+                                           NSLayoutConstraint.init(item: prompt.title, attribute: .top, relatedBy: .equal, toItem: prompt.content, attribute: .top, multiplier: 1, constant: 20),
+                                           NSLayoutConstraint.init(item: prompt.title, attribute: .bottom, relatedBy: .equal, toItem: prompt.content, attribute: .bottom, multiplier: 1, constant: -20)])
+            
+            sup.addConstraints([NSLayoutConstraint.init(item: prompt.content, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: sup, attribute: .left, multiplier: 1, constant: 20),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
             
             prompt.background.alpha = 0
             prompt.content.alpha = 0
@@ -112,26 +124,42 @@ open class Prompt {
             prompt.activity.startAnimating()
             prompt.title.text = title
             prompt.background.isHidden = !isBackground
-            prompt.background.frame = CGRect.init(origin: CGPoint.init(), size: sup.frame.size)
-            
-            if !title.isEmpty {
-                
-                let rect = title.boundingRect(with: CGSize.init(width: 0.8 * sup.frame.size.width, height: 0.8 * sup.frame.size.height), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: prompt.title.font!], context: nil)
-                prompt.title.frame = rect
-                prompt.content.frame = CGRect.init(x: 0, y: 0, width: rect.size.width + 40, height: rect.size.height + 40 + prompt.activity.frame.size.height + 12)
-                prompt.title.center = CGPoint.init(x: prompt.content.center.x, y: prompt.content.center.y + prompt.activity.frame.size.height/2 + 6)
-                prompt.activity.center = CGPoint.init(x: prompt.content.center.x, y: prompt.content.center.y - prompt.title.frame.size.height/2 - 6)
-            }
-            else {
-                
-                prompt.content.frame = CGRect.init(x: 0, y: 0, width: prompt.activity.frame.size.width + 40, height: prompt.activity.frame.size.height + 40)
-                prompt.activity.center = prompt.content.center
-            }
-            
-            prompt.content.center = location
             
             sup.addSubview(prompt.background)
             sup.addSubview(prompt.content)
+            
+            sup.addConstraints([NSLayoutConstraint.init(item: prompt.background, attribute: .left, relatedBy: .equal, toItem: sup, attribute: .left, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .right, relatedBy: .equal, toItem: sup, attribute: .right, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .top, relatedBy: .equal, toItem: sup, attribute: .top, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .bottom, relatedBy: .equal, toItem: sup, attribute: .bottom, multiplier: 1, constant: 0)])
+            
+            if !title.isEmpty {
+                
+                prompt.content.addConstraints([NSLayoutConstraint.init(item: prompt.activity, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: prompt.content, attribute: .left, multiplier: 1, constant: 20),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .centerX, relatedBy: .equal, toItem: prompt.content, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .top, relatedBy: .equal, toItem: prompt.content, attribute: .top, multiplier: 1, constant: 20),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .bottom, relatedBy: .equal, toItem: prompt.title, attribute: .top, multiplier: 1, constant: -12)])
+                
+                prompt.content.addConstraints([NSLayoutConstraint.init(item: prompt.title, attribute: .left, relatedBy: .equal, toItem: prompt.content, attribute: .left, multiplier: 1, constant: 20),
+                                               NSLayoutConstraint.init(item: prompt.title, attribute: .centerX, relatedBy: .equal, toItem: prompt.content, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
+                                               NSLayoutConstraint.init(item: prompt.title, attribute: .bottom, relatedBy: .equal, toItem: prompt.content, attribute: .bottom, multiplier: 1, constant: -20)])
+                
+                let rect = title.boundingRect(with: CGSize.init(width: 0.8 * sup.frame.size.width, height: 0.8 * sup.frame.size.height), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: prompt.title.font!], context: nil)
+                
+                prompt.title.addConstraints([NSLayoutConstraint.init(item: prompt.title, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: rect.size.width),
+                                             NSLayoutConstraint.init(item: prompt.title, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: rect.size.height)])
+            }
+            else {
+                
+                prompt.content.addConstraints([NSLayoutConstraint.init(item: prompt.activity, attribute: .left, relatedBy: .equal, toItem: prompt.content, attribute: .left, multiplier: 1, constant: 20),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .right, relatedBy: .equal, toItem: prompt.content, attribute: .right, multiplier: 1, constant: -20),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .top, relatedBy: .equal, toItem: prompt.content, attribute: .top, multiplier: 1, constant: 20),
+                                               NSLayoutConstraint.init(item: prompt.activity, attribute: .bottom, relatedBy: .equal, toItem: prompt.content, attribute: .bottom, multiplier: 1, constant: -20)])
+            }
+            
+            sup.addConstraints([NSLayoutConstraint.init(item: prompt.content, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: sup, attribute: .left, multiplier: 1, constant: 20),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.content, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
             
             prompt.background.alpha = 0
             prompt.content.alpha = 0
@@ -193,19 +221,25 @@ open class Prompt {
             prompt.title.isHidden = true
             prompt.content.isHidden = true
             prompt.background.isHidden = !isBackground
-            prompt.background.frame = CGRect.init(origin: CGPoint.init(), size: sup.frame.size)
+            
+            sup.addSubview(prompt.background)
+            sup.addSubview(prompt.gif)
+            
+            sup.addConstraints([NSLayoutConstraint.init(item: prompt.background, attribute: .left, relatedBy: .equal, toItem: sup, attribute: .left, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .right, relatedBy: .equal, toItem: sup, attribute: .right, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .top, relatedBy: .equal, toItem: sup, attribute: .top, multiplier: 1, constant: 0),
+                                NSLayoutConstraint.init(item: prompt.background, attribute: .bottom, relatedBy: .equal, toItem: sup, attribute: .bottom, multiplier: 1, constant: 0)])
             
             prompt.gif.gif(data)
             
             if let image = prompt.gif.image {
                 
-                prompt.gif.frame = CGRect.init(origin: CGPoint.init(), size: image.size)
+                sup.addConstraints([NSLayoutConstraint.init(item: prompt.gif, attribute: .centerX, relatedBy: .equal, toItem: sup, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
+                                    NSLayoutConstraint.init(item: prompt.gif, attribute: .centerY, relatedBy: .equal, toItem: sup, attribute: .centerY, multiplier: sup.center.y/location.y, constant: 0)])
+                
+                prompt.gif.addConstraints([NSLayoutConstraint.init(item: prompt.gif, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: image.size.width),
+                                             NSLayoutConstraint.init(item: prompt.gif, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: image.size.height)])
             }
-            
-            prompt.gif.center = location
-            
-            sup.addSubview(prompt.background)
-            sup.addSubview(prompt.gif)
             
             prompt.background.alpha = 0
             prompt.gif.alpha = 0
