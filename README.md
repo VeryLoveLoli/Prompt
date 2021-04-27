@@ -1,9 +1,19 @@
 # Prompt
+
 `Swift` `iOS` `Prompt`
 
 * 文字提示
 * 加载提示
 * GIF提示
+
+## Integration
+
+### Xcode
+    File -> Swift Packages -> Add Package dependency
+
+### CocoaPods
+
+[GitHub Prompt](https://github.com/VeryLoveLoli/Prompt)
 
 ## Usage
 
@@ -83,7 +93,7 @@
     
         load.close()
     }
-    	
+        
     /// GIF提示
     if let path = Bundle.main.path(forResource: "test", ofType: "gif") {
         

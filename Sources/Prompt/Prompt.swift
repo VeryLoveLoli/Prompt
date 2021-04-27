@@ -24,6 +24,21 @@ open class Prompt {
     public let activity = UIActivityIndicatorView.init(style: .white)
     /// GIF
     public let gif = UIImageView.init()
+    /// 加载前缀标题
+    var prefix = ""
+    /// 加载后缀标题
+    var suffix = ""
+    /// 动态标题
+    public var dynamic = "" {
+        
+        didSet {
+            
+            DispatchQueue.main.async {
+                
+                self.title.text = self.prefix + self.dynamic + self.suffix
+            }
+        }
+    }
     
     public init() {
         
@@ -110,12 +125,13 @@ open class Prompt {
      
      - parameter    title:          文字
      - parameter    timeInterval:   动态显示的文字时间间隔
-     - parameter    repeats:        动态显示的文字个数（<=title.count，从后往前算）
+     - parameter    repeats:        动态显示的文字个数（小于或等于`title.count`，从后往前算）
+     - parameter    dynamic:        最大长度动态字符串（不显示，需设置`dynamic`属性，`dynamic`字符串在`repeats`之前）
      - parameter    isBackground:   是否显示背景（用于阻止用户点击）
      - parameter    sup:            添加到的视图
      - parameter    location:       在视图中的位置
      */
-    public static func load(_ title: String, timeInterval: TimeInterval, repeats: Int, isBackground: Bool, sup: UIView, location: CGPoint) -> Prompt {
+    public static func load(_ title: String, timeInterval: TimeInterval, repeats: Int, dynamic: String, isBackground: Bool, sup: UIView, location: CGPoint) -> Prompt {
         
         let prompt = Prompt.init()
         
@@ -133,7 +149,7 @@ open class Prompt {
                                 NSLayoutConstraint.init(item: prompt.background, attribute: .top, relatedBy: .equal, toItem: sup, attribute: .top, multiplier: 1, constant: 0),
                                 NSLayoutConstraint.init(item: prompt.background, attribute: .bottom, relatedBy: .equal, toItem: sup, attribute: .bottom, multiplier: 1, constant: 0)])
             
-            if !title.isEmpty {
+            if !title.isEmpty || !dynamic.isEmpty {
                 
                 prompt.content.addConstraints([NSLayoutConstraint.init(item: prompt.activity, attribute: .left, relatedBy: .greaterThanOrEqual, toItem: prompt.content, attribute: .left, multiplier: 1, constant: 20),
                                                NSLayoutConstraint.init(item: prompt.activity, attribute: .centerX, relatedBy: .equal, toItem: prompt.content, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
@@ -144,7 +160,7 @@ open class Prompt {
                                                NSLayoutConstraint.init(item: prompt.title, attribute: .centerX, relatedBy: .equal, toItem: prompt.content, attribute: .centerX, multiplier: sup.center.x/location.x, constant: 0),
                                                NSLayoutConstraint.init(item: prompt.title, attribute: .bottom, relatedBy: .equal, toItem: prompt.content, attribute: .bottom, multiplier: 1, constant: -20)])
                 
-                let rect = title.boundingRect(with: CGSize.init(width: 0.8 * sup.frame.size.width, height: 0.8 * sup.frame.size.height), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: prompt.title.font!], context: nil)
+                let rect = (title+dynamic).boundingRect(with: CGSize.init(width: 0.8 * sup.frame.size.width, height: 0.8 * sup.frame.size.height), options: .usesLineFragmentOrigin, attributes: [NSAttributedString.Key.font: prompt.title.font!], context: nil)
                 
                 prompt.title.addConstraints([NSLayoutConstraint.init(item: prompt.title, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: rect.size.width),
                                              NSLayoutConstraint.init(item: prompt.title, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: rect.size.height)])
@@ -172,16 +188,26 @@ open class Prompt {
                 prompt.content.transform = CGAffineTransform.init(scaleX: 1, y: 1)
             })
             
+            prompt.prefix = title
+            prompt.suffix = ""
+            
             if title.count >= repeats && repeats > 0 {
+                
+                let prefix_start = title.index(title.startIndex, offsetBy: 0)
+                let prefix_end = title.index(title.endIndex, offsetBy: -repeats)
+                
+                prompt.prefix = String(title[prefix_start..<prefix_end])
+                prompt.suffix = String(title[prefix_end..<title.endIndex])
                 
                 var i = repeats
                 
                 let timer = Timer.init(timeInterval: timeInterval, repeats: true, block: { (timer) in
                     
-                    let start = title.index(title.startIndex, offsetBy: 0)
                     let end = title.index(title.endIndex, offsetBy: -i)
                     
-                    prompt.title.text = String.init(title[start..<end])
+                    prompt.suffix = String(title[prefix_end..<end])
+                    
+                    prompt.title.text = prompt.prefix + prompt.dynamic + prompt.suffix
                     
                     i -= 1
                     
@@ -198,6 +224,8 @@ open class Prompt {
                 
                 RunLoop.current.add(timer, forMode: .default)
             }
+            
+            prompt.title.text = prompt.prefix + prompt.dynamic + prompt.suffix
         }
         
         return prompt
@@ -352,11 +380,15 @@ public extension Prompt {
             
             return window
         }
-        else if UIApplication.shared.windows.count > 0 {
-            
-            return UIApplication.shared.windows[0]
-        }
         else {
+            
+            for item in UIApplication.shared.windows {
+                
+                if item.isKeyWindow {
+                    
+                    return item
+                }
+            }
             
             return nil
         }
@@ -382,14 +414,15 @@ public extension Prompt {
      
      - parameter    title:          文字
      - parameter    timeInterval:   动态显示的文字时间间隔
-     - parameter    repeats:        动态显示的文字个数（<=title.count，从后往前算）
+     - parameter    repeats:        动态显示的文字个数（小于或等于`title.count`，从后往前算）
+     - parameter    dynamic:        最大长度动态字符串（不显示，需设置`dynamic`属性，`dynamic`字符串在`repeats`之前）
      - parameter    isBackground:   是否显示背景（用于阻止用户点击）
      */
-    static func loadWindow(_ title: String, timeInterval: TimeInterval, repeats: Int, isBackground: Bool) -> Prompt? {
+    static func loadWindow(_ title: String, timeInterval: TimeInterval, repeats: Int, dynamic: String, isBackground: Bool) -> Prompt? {
         
         if let window = keyWindow() {
             
-            return load(title, timeInterval: timeInterval, repeats: repeats, isBackground: isBackground, sup: window, location: window.center)
+            return load(title, timeInterval: timeInterval, repeats: repeats, dynamic: dynamic, isBackground: isBackground, sup: window, location: window.center)
         }
         else {
             
@@ -415,3 +448,4 @@ public extension Prompt {
         }
     }
 }
+
